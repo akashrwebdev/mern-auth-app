@@ -1,5 +1,7 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -22,11 +24,22 @@ export const register = async (req, res) => {
     password: hashPassword,
   });
 
+  const token = jwt.sign(
+    {
+      id: user._id,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
+
   res.status(201).json({
     message: "Usersss register successfully",
     user: {
       username: user.username,
       email: user.email,
     },
+    token,
   });
 };

@@ -116,6 +116,6 @@ EMAIL_PASS=your_app_password
 ---
 
 ## 👨‍💻 Author
-Built by **Akashr-2003**
+Built by **Akash**
 
 If you find this project helpful, please consider giving it a ⭐ on GitHub!

@@ -5,4 +5,5 @@ const authRouter = Router();
 
 authRouter.post("/register", authCountroller.register);
 
+
 export default authRouter;
