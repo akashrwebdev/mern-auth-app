@@ -7,4 +7,6 @@ authRouter.post("/register", authCountroller.register);
 
 authRouter.get("/get-me", authCountroller.getMe);
 
+authRouter.get("/refreshToken", authCountroller.refreshToken);
+
 export default authRouter;

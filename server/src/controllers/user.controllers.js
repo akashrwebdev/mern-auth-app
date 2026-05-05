@@ -47,7 +47,7 @@ export const register = async (req, res) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     Secure: true,
-    sameSite: "Strict",
+    sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, //7days
   });
 
@@ -80,5 +80,49 @@ export const getMe = async (req, res) => {
       username: user.username,
       email: user.email,
     },
+  });
+};
+
+export const refreshToken = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      message: "Refresh token not found",
+    });
+  }
+
+  const decode = jwt.verify(refreshToken, config.JWT_SECRET);
+
+  const accessToken = jwt.sign(
+    {
+      id: decode._id,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: "15m",
+    },
+  );
+
+  const newRefreshToken = jwt.sign(
+    {
+      id: decode._id,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    },
+  );
+
+  res.cookie("refreshToken", newRefreshToken, {
+    httpOnly: true,
+    Secure: true,
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
+  });
+
+  res.status(200).json({
+    message: "Access token refreshed successfully",
+    accessToken,
   });
 };
