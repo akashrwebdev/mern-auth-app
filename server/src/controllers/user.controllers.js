@@ -24,15 +24,32 @@ export const register = async (req, res) => {
     password: hashPassword,
   });
 
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     {
       id: user._id,
     },
     config.JWT_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: "15m",
     },
   );
+
+  const refreshToken = jwt.sign(
+    {
+      id: user._id,
+    },
+    config.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    },
+  );
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    Secure: true,
+    sameSite: "Strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, //7days
+  });
 
   res.status(201).json({
     message: "Usersss register successfully",
@@ -40,7 +57,7 @@ export const register = async (req, res) => {
       username: user.username,
       email: user.email,
     },
-    token,
+    accessToken,
   });
 };
 
